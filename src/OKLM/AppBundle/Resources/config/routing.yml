@@ -1,0 +1,7 @@
+oklm_app_article:
+    resource: "@OKLMAppBundle/Resources/config/routing/article.yml"
+    prefix:   /article
+
+oklm_app_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: OKLMAppBundle:Default:index }

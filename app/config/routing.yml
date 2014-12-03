@@ -1,0 +1,8 @@
+oklm_common:
+    resource: "@OKLMCommonBundle/Resources/config/routing.yml"
+    prefix:   /
+
+oklm_app:
+    resource: "@OKLMAppBundle/Resources/config/routing.yml"
+    prefix:   /
+
