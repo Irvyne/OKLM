@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Article controller.
- *
  */
 class ArticleController extends Controller
 {
@@ -27,9 +26,9 @@ class ArticleController extends Controller
             'entities' => $entities,
         ));
     }
+
     /**
      * Creates a new Article entity.
-     *
      */
     public function createAction(Request $request)
     {
@@ -77,9 +76,7 @@ class ArticleController extends Controller
      */
     public function showAction($slug)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('OKLMAppBundle:Article')->findOneBy(['slug' => $slug]);
+        $entity = $this->getArticleManager()->getRepository()->findOneBy(['slug' => $slug]);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Article entity.');
@@ -122,9 +119,7 @@ class ArticleController extends Controller
      */
     public function updateAction(Request $request, $id)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('OKLMAppBundle:Article')->find($id);
+        $entity = $this->getArticleManager()->getRepository()->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Article entity.');
@@ -137,7 +132,7 @@ class ArticleController extends Controller
             $editForm->handleRequest($request);
 
             if ($editForm->isValid()) {
-                $em->flush();
+                $this->getArticleManager()->update($entity);
 
                 return $this->redirect($this->generateUrl('article_show', array('slug' => $entity->getSlug())));
             }
@@ -159,15 +154,13 @@ class ArticleController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('OKLMAppBundle:Article')->find($id);
+            $entity = $this->getArticleManager()->getRepository()->find($id);
 
             if (!$entity) {
                 throw $this->createNotFoundException('Unable to find Article entity.');
             }
 
-            $em->remove($entity);
-            $em->flush();
+            $this->getArticleManager()->delete($entity);
         }
 
         return $this->redirect($this->generateUrl('article'));
