@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use OKLM\AppBundle\Entity\Article;
 use OKLM\AppBundle\Form\ArticleType;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Article controller.
@@ -24,11 +25,11 @@ class ArticleController extends Controller
         /** @var Article[] $entities */
         $entities = $em->getRepository('OKLMAppBundle:Article')->findAll();
 
-        /*foreach ($entities as $entity) {
+        foreach ($entities as $entity) {
             $entity->generateSlug();
         }
 
-        $em->flush();*/
+        $em->flush();
 
         return $this->render('OKLMAppBundle:Article:index.html.twig', array(
             'entities' => $entities,
@@ -51,7 +52,7 @@ class ArticleController extends Controller
                 $em->persist($entity);
                 $em->flush();
 
-                return $this->redirect($this->generateUrl('article_show', array('id' => $entity->getId())));
+                return $this->redirect($this->generateUrl('article_show', ['slug' => $entity->getSlug()]));
             }
         }
 
@@ -144,14 +145,20 @@ class ArticleController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing Article entity.
      *
+     * @param Request $request
+     * @param         $id
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function updateAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
+        /** @var Article $entity */
         $entity = $em->getRepository('OKLMAppBundle:Article')->find($id);
 
         if (!$entity) {
@@ -160,12 +167,15 @@ class ArticleController extends Controller
 
         $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createEditForm($entity);
-        $editForm->handleRequest($request);
 
-        if ($editForm->isValid()) {
-            $em->flush();
+        if (true === in_array($request->getMethod(), ['POST', 'PUT'])) {
+            $editForm->handleRequest($request);
 
-            return $this->redirect($this->generateUrl('article_edit', array('id' => $id)));
+            if ($editForm->isValid()) {
+                $em->flush();
+
+                return $this->redirect($this->generateUrl('article_show', array('slug' => $entity->getSlug())));
+            }
         }
 
         return $this->render('OKLMAppBundle:Article:edit.html.twig', array(
