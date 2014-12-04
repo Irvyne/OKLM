@@ -2,6 +2,7 @@
 
 namespace OKLM\AppBundle\Controller;
 
+use OKLM\AppBundle\Manager\ArticleManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -20,16 +21,7 @@ class ArticleController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var Article[] $entities */
-        $entities = $em->getRepository('OKLMAppBundle:Article')->findAll();
-
-        foreach ($entities as $entity) {
-            $entity->generateSlug();
-        }
-
-        $em->flush();
+        $entities = $this->getArticleManager()->getRepository()->findAll();
 
         return $this->render('OKLMAppBundle:Article:index.html.twig', array(
             'entities' => $entities,
@@ -48,9 +40,7 @@ class ArticleController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($entity);
-                $em->flush();
+                $this->getArticleManager()->create($entity);
 
                 return $this->redirect($this->generateUrl('article_show', ['slug' => $entity->getSlug()]));
             }
@@ -104,30 +94,6 @@ class ArticleController extends Controller
     }
 
     /**
-     * Displays a form to edit an existing Article entity.
-     *
-     */
-    public function editAction($id)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('OKLMAppBundle:Article')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Article entity.');
-        }
-
-        $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
-
-        return $this->render('OKLMAppBundle:Article:edit.html.twig', array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
-    }
-
-    /**
     * Creates a form to edit a Article entity.
     *
     * @param Article $entity The entity
@@ -158,7 +124,6 @@ class ArticleController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        /** @var Article $entity */
         $entity = $em->getRepository('OKLMAppBundle:Article')->find($id);
 
         if (!$entity) {
@@ -223,5 +188,13 @@ class ArticleController extends Controller
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
+    }
+
+    /**
+     * @return ArticleManager
+     */
+    private function getArticleManager()
+    {
+        return $this->get('oklm_app.article.manager');
     }
 }

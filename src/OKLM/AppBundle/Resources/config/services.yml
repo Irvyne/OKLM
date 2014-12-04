@@ -5,6 +5,12 @@ services:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preUpdate }
 
+    oklm_app.article.manager:
+        class: OKLM\AppBundle\Manager\ArticleManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - OKLM\AppBundle\Entity\Article
+
 #    oklm_app.example:
 #        class: OKLM\AppBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
