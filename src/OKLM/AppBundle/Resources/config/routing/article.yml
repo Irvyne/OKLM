@@ -2,14 +2,10 @@ article:
     path:     /
     defaults: { _controller: "OKLMAppBundle:Article:index" }
 
-article_new:
-    path:     /new
-    defaults: { _controller: "OKLMAppBundle:Article:new" }
-
 article_create:
     path:     /create
     defaults: { _controller: "OKLMAppBundle:Article:create" }
-    requirements: { _method: post }
+    requirements: { _method: get|post }
 
 article_show:
     path:     /{slug}
@@ -28,3 +24,4 @@ article_delete:
     path:     /{id}/delete
     defaults: { _controller: "OKLMAppBundle:Article:delete" }
     requirements: { _method: post|delete }
+

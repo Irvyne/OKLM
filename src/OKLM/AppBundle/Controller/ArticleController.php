@@ -42,14 +42,17 @@ class ArticleController extends Controller
     {
         $entity = new Article();
         $form = $this->createCreateForm($entity);
-        $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
 
-            return $this->redirect($this->generateUrl('article_show', array('id' => $entity->getId())));
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($entity);
+                $em->flush();
+
+                return $this->redirect($this->generateUrl('article_show', array('id' => $entity->getId())));
+            }
         }
 
         return $this->render('OKLMAppBundle:Article:new.html.twig', array(
@@ -75,21 +78,6 @@ class ArticleController extends Controller
         $form->add('submit', 'submit', array('label' => 'Create'));
 
         return $form;
-    }
-
-    /**
-     * Displays a form to create a new Article entity.
-     *
-     */
-    public function newAction()
-    {
-        $entity = new Article();
-        $form   = $this->createCreateForm($entity);
-
-        return $this->render('OKLMAppBundle:Article:new.html.twig', array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        ));
     }
 
     /**
