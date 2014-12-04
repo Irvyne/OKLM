@@ -2,13 +2,10 @@
 
 namespace OKLM\AppBundle\Controller;
 
-use OKLM\AppBundle\Manager\ArticleManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
 use OKLM\AppBundle\Entity\Article;
-use OKLM\AppBundle\Form\ArticleType;
-use Symfony\Component\HttpFoundation\Response;
+use OKLM\AppBundle\Manager\ArticleManager;
 
 /**
  * Article controller.
@@ -60,7 +57,7 @@ class ArticleController extends Controller
      */
     private function createCreateForm(Article $entity)
     {
-        $form = $this->createForm(new ArticleType(), $entity, array(
+        $form = $this->createForm('oklm_appbundle_article', $entity, array(
             'action' => $this->generateUrl('article_create'),
             'method' => 'POST',
         ));
@@ -99,7 +96,7 @@ class ArticleController extends Controller
     */
     private function createEditForm(Article $entity)
     {
-        $form = $this->createForm(new ArticleType(), $entity, array(
+        $form = $this->createForm('oklm_appbundle_article', $entity, array(
             'action' => $this->generateUrl('article_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));

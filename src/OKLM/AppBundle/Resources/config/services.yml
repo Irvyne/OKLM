@@ -11,6 +11,11 @@ services:
             - @doctrine.orm.entity_manager
             - OKLM\AppBundle\Entity\Article
 
+    oklm_app.article.form_type:
+        class: OKLM\AppBundle\Form\ArticleType
+        tags:
+            - { name: form.type, alias: oklm_appbundle_article }
+
 #    oklm_app.example:
 #        class: OKLM\AppBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
