@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class ArticleType extends AbstractType
+class CommentType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -15,13 +15,10 @@ class ArticleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title')
             ->add('content')
-            ->add('comments', null, [
-                'required' => false,
-                'expanded' => true,
-                'multiple' => true,
-            ])
+            ->add('name')
+            ->add('email')
+            ->add('article')
         ;
     }
     
@@ -31,7 +28,7 @@ class ArticleType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'OKLM\AppBundle\Entity\Article'
+            'data_class' => 'OKLM\AppBundle\Entity\Comment'
         ));
     }
 
@@ -40,6 +37,6 @@ class ArticleType extends AbstractType
      */
     public function getName()
     {
-        return 'oklm_appbundle_article';
+        return 'oklm_appbundle_comment';
     }
 }

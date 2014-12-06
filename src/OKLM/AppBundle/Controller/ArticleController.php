@@ -129,7 +129,7 @@ class ArticleController extends Controller
             $editForm->handleRequest($request);
 
             if ($editForm->isValid()) {
-                $this->getArticleManager()->update($entity);
+                $this->getArticleManager()->flush();
 
                 return $this->redirect($this->generateUrl('article_show', array('slug' => $entity->getSlug())));
             }

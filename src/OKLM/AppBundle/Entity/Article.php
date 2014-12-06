@@ -3,8 +3,10 @@
 namespace OKLM\AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use OKLM\CommonBundle\Traits\Doctrine as OKLMDB;
+use OKLM\AppBundle\Entity\Comment;
 
 /**
  * Article
@@ -35,6 +37,22 @@ class Article
 
 
     /**
+     * @var
+     *
+     * @ORM\OneToMany(targetEntity="OKLM\AppBundle\Entity\Comment", mappedBy="article")
+     */
+    private $comments;
+
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
+
+    /**
      * Set title
      *
      * @param string $title
@@ -50,7 +68,7 @@ class Article
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -73,7 +91,7 @@ class Article
     /**
      * Get content
      *
-     * @return string 
+     * @return string
      */
     public function getContent()
     {
@@ -86,5 +104,48 @@ class Article
     public function getSluggableFields()
     {
         return ['title'];
+    }
+
+    /**
+     * Add comment
+     *
+     * @param Comment $comment
+     *
+     * @return Article
+     */
+    public function addComment(Comment $comment)
+    {
+        $this->comments[] = $comment;
+        $comment->setArticle($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove comment
+     *
+     * @param Comment $comment
+     */
+    public function removeComment(Comment $comment)
+    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return ArrayCollection
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getTitle();
     }
 }

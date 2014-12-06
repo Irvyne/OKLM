@@ -67,11 +67,23 @@ abstract class BaseManager
     }
 
     /**
-     * @param $entity
+     * @param      $entity
+     * @param bool $flush
      */
-    public function delete($entity)
+    public function delete($entity, $flush = true)
     {
         $this->om->remove($entity);
+
+        if (true === $flush)
+            $this->om->flush();
+    }
+
+    /**
+     * Flush
+     */
+    public function flush()
+    {
+        $this->om->flush();
     }
 
     /**
